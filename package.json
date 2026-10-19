@@ -16,7 +16,7 @@
     "test:live": "LIVE=1 playwright test tests/live.spec.js --project=desktop"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.9.1",
-    "@playwright/test": "^1.47.0"
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1"
   }
 }
