@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(join(root, p), 'utf8');
 
-const RUNTIME_FILES = ['index.html', 'css/main.css', 'js/main.js', 'js/particles.js', 'js/palette.js', 'js/inquiry.js', 'js/emblem-data.js'];
+const RUNTIME_FILES = ['index.html', 'privacy/index.html', 'terms/index.html', 'css/main.css', 'js/main.js', 'js/particles.js', 'js/palette.js', 'js/inquiry.js', 'js/emblem-data.js'];
 
 test.describe('static: the livery', () => {
   const tokens = JSON.parse(read('tokens.json'));
@@ -87,14 +87,18 @@ test.describe('static: the promise', () => {
     }
   });
 
-  test('every local href/src in index.html resolves to a real file', () => {
-    const html = read('index.html');
-    const refs = [...html.matchAll(/(?:href|src)="([^"#][^"]*)"/g)]
-      .map(m => m[1])
-      .filter(u => !u.startsWith('mailto:') && !u.startsWith('http') && !u.startsWith('data:'));
-    expect(refs.length).toBeGreaterThan(5);
-    for (const r of refs) {
-      expect(existsSync(join(root, r)), `missing: ${r}`).toBe(true);
+  test('every local href/src in every page resolves to a real file', () => {
+    for (const page of ['index.html', 'privacy/index.html', 'terms/index.html']) {
+      const html = read(page);
+      const refs = [...html.matchAll(/(?:href|src)="([^"#][^"]*)"/g)]
+        .map(m => m[1])
+        .filter(u => !u.startsWith('mailto:') && !u.startsWith('http') && !u.startsWith('data:'));
+      expect(refs.length, `${page} has almost no local refs`).toBeGreaterThan(3);
+      for (const r of refs) {
+        // Root-absolute against the repo root; relative against the page.
+        const f = r.startsWith('/') ? join(root, r) : join(root, dirname(page), r);
+        expect(existsSync(f), `${page} missing: ${r}`).toBe(true);
+      }
     }
   });
 

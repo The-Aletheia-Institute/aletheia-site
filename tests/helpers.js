@@ -1,12 +1,17 @@
 // Shared test plumbing.
-export async function gotoSettled(page, { skipLoader = true } = {}) {
+export async function gotoSettled(page, { skipLoader = true, path = '/', waitForReady = true } = {}) {
   if (skipLoader) {
     await page.addInitScript(() => {
       try { sessionStorage.setItem('aletheia-seen', '1'); } catch (e) {}
     });
   }
-  await page.goto('/');
-  await page.waitForFunction(() => document.body.classList.contains('ready'), null, { timeout: 15000 });
+  await page.goto(path);
+  // The legal documents carry no script, so nothing ever adds body.ready.
+  // Waiting for it there is a 15 s timeout, not a load failure — which is
+  // why this is a flag and not a longer wait.
+  if (waitForReady) {
+    await page.waitForFunction(() => document.body.classList.contains('ready'), null, { timeout: 15000 });
+  }
 }
 
 // Collect every request the page makes that leaves the origin — must stay empty.

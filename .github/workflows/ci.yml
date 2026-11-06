@@ -69,9 +69,16 @@ jobs:
             echo "poll $i: served '$LIVE' — waiting for CDN…"; sleep 10
           done
           [ "$LIVE" = "$REF" ] || { echo "FAIL: live HTML never matched this build"; exit 1; }
-          for a in $(grep -oE '(css|js|assets)/[^"?]+\?v=[a-f0-9]+' dist/index.html | sort -u); do
+          for a in $(grep -ohE '(css|js|assets)/[^"?]+\?v=[a-f0-9]+' dist/index.html dist/privacy/index.html dist/terms/index.html | sort -u); do
             code=$(curl -s -o /dev/null -w "%{http_code}" "$URL/$a")
             echo "$code  $a"
             [ "$code" = "200" ] || { echo "FAIL: hashed asset not serving"; exit 1; }
           done
-          echo "SMOKE PASS: live HTML and all hashed assets are this build, atomically."
+          # The legal URLs are what a carrier fetches during A2P review.
+          # If either stops serving, the campaign behind it stops too.
+          for p in /privacy/ /terms/; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$URL$p")
+            echo "$code  $p"
+            [ "$code" = "200" ] || { echo "FAIL: $p is not serving"; exit 1; }
+          done
+          echo "SMOKE PASS: live HTML, hashed assets and legal URLs are this build, atomically."
