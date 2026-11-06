@@ -1095,3 +1095,54 @@ footer .fine a{text-decoration:underline;text-underline-offset:3px}
   .legal{padding-top:44px;font-size:16px}
   .legal-head-inner{gap:12px}
 }
+
+/* ============================================================
+   MANIFESTO — Hold the Door.
+   Rides the .legal scope for its measure and inherits every law
+   with it: no script, no motion, links underlined, not one new
+   tincture minted. What differs is weight. This one is meant to
+   be read aloud, so the vows stand apart and the last line
+   stands alone.
+   Every selector here is doubled (.manifesto .x) on purpose —
+   `.legal p` is one class and one element, so a bare class would
+   lose the cascade to it and the overrides would silently not
+   apply.
+   ============================================================ */
+
+/* The lede runs straight into the sentence it introduces, so the
+   rule that closes a legal lede would cut the thought in half. */
+.manifesto .legal-lede{border-bottom:none;padding-bottom:6px;margin-bottom:4px}
+
+/* The thing everyone has already been told, in somebody else's voice. */
+.manifesto .manifesto-said{
+  font-family:var(--serif);
+  font-size:21px;line-height:1.5;
+  color:var(--dim);
+  border-left:2px solid var(--line);
+  padding-left:20px;
+  margin:10px 0 30px;
+}
+
+.manifesto .manifesto-rule{
+  border:0;border-top:1px solid var(--line);
+  margin:48px 0 44px;
+}
+
+/* A promise is not a paragraph. Each one holds its own line so it
+   can be quoted, refused, or held against us one at a time. */
+.manifesto .vow{
+  padding-left:18px;
+  border-left:2px solid var(--accent);
+  margin-bottom:18px;
+}
+
+.manifesto .manifesto-close{
+  font-family:var(--serif);
+  font-size:26px;line-height:1.3;
+  margin-top:34px;
+}
+
+@media (max-width:640px){
+  .manifesto .manifesto-said{font-size:19px;padding-left:16px}
+  .manifesto .manifesto-close{font-size:22px}
+}

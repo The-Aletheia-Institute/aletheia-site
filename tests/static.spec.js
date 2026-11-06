@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(join(root, p), 'utf8');
 
-const RUNTIME_FILES = ['index.html', 'privacy/index.html', 'terms/index.html', 'css/main.css', 'js/main.js', 'js/particles.js', 'js/palette.js', 'js/inquiry.js', 'js/emblem-data.js'];
+const RUNTIME_FILES = ['index.html', 'manifesto/index.html', 'privacy/index.html', 'terms/index.html', 'css/main.css', 'js/main.js', 'js/particles.js', 'js/palette.js', 'js/inquiry.js', 'js/emblem-data.js'];
 
 test.describe('static: the livery', () => {
   const tokens = JSON.parse(read('tokens.json'));
@@ -88,7 +88,7 @@ test.describe('static: the promise', () => {
   });
 
   test('every local href/src in every page resolves to a real file', () => {
-    for (const page of ['index.html', 'privacy/index.html', 'terms/index.html']) {
+    for (const page of ['index.html', 'manifesto/index.html', 'privacy/index.html', 'terms/index.html']) {
       const html = read(page);
       const refs = [...html.matchAll(/(?:href|src)="([^"#][^"]*)"/g)]
         .map(m => m[1])

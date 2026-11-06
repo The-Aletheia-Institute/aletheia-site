@@ -14,7 +14,7 @@ const dist = join(root, 'dist');
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
 
-for (const entry of ['index.html', 'privacy', 'terms', 'css', 'js', 'assets']) {
+for (const entry of ['index.html', 'manifesto', 'privacy', 'terms', 'css', 'js', 'assets']) {
   await cp(join(root, entry), join(dist, entry), { recursive: true });
 }
 
@@ -22,7 +22,7 @@ for (const entry of ['index.html', 'privacy', 'terms', 'css', 'js', 'assets']) {
 // EVERY page is stamped, not just the home page. A legal page deployed with
 // unstamped refs can pair with a stale cached asset, and the post-deploy
 // smoke reads these hashes to prove the live site is this exact build.
-const PAGES = ['index.html', 'privacy/index.html', 'terms/index.html'];
+const PAGES = ['index.html', 'manifesto/index.html', 'privacy/index.html', 'terms/index.html'];
 const hashed = [];
 for (const page of PAGES) {
   const pageFile = join(dist, page);
