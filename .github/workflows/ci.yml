@@ -17,6 +17,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # the attribution gate scans the whole history, not just the tip
+          fetch-depth: 0
+
+      # A commit-msg hook on the dev hosts refuses an AI attribution trailer,
+      # but `--no-verify` walks straight past it. This is the wall: `deploy`
+      # needs `test`, so a trailered commit cannot reach the live site however
+      # it was made.
+      - name: No AI attribution in any commit
+        run: |
+          set -u
+          PAT='co-authored-by:[[:space:]]*claude|generated with .?claude|claude[.]com/claude-code|noreply@anthropic[.]com'
+
+          # A scan that cannot detect is not a scan. The first draft of this
+          # step used `git log -iE`; git rejected the flag, the empty output
+          # read as clean, and a planted commit sailed through. So the gate
+          # proves its own detector before it may report clean.
+          if ! echo 'Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>' | grep -qiE "$PAT"; then
+            echo "::error::gate self-test failed - the pattern detects nothing"; exit 1
+          fi
+          if echo 'Co-authored-by: dependabot[bot] <1+dependabot[bot]@users.noreply.github.com>' | grep -qiE "$PAT"; then
+            echo "::error::gate self-test failed - the pattern matches dependabot"; exit 1
+          fi
+
+          if ! HITS=$(git log --regexp-ignore-case --extended-regexp --grep="$PAT" --format='%h  %an  %s'); then
+            echo "::error::the attribution scan could not run"; exit 1
+          fi
+          if [ -n "$HITS" ]; then
+            echo "::error::a commit carries an AI attribution trailer - the deploy is blocked"
+            echo "$HITS"
+            exit 1
+          fi
+          echo "clean: $(git rev-list --count HEAD) commits scanned, none carrying AI attribution"
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
