@@ -31,7 +31,7 @@ test.describe('legal: what a carrier reviews', () => {
     expect(html).toMatch(/will not be shared with any third parties/i);
   });
 
-  test('terms carry every messaging programme element', () => {
+  test('terms carry every messaging program element', () => {
     const html = flat('terms/index.html');
     for (const phrase of [
       'Message frequency varies',
@@ -98,7 +98,7 @@ test.describe('legal: the pages keep the site laws', () => {
       }
     });
 
-    test(`${p.name}: prose links are underlined, not colour alone`, async ({ page }) => {
+    test(`${p.name}: prose links are underlined, not color alone`, async ({ page }) => {
       await gotoSettled(page, { path: p.path, waitForReady: false });
       const decoration = await page.locator('.legal p a').first()
         .evaluate(el => getComputedStyle(el).textDecorationLine);
