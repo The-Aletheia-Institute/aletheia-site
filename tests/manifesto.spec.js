@@ -43,7 +43,7 @@ test.describe('manifesto: the promises', () => {
       'Keep your word',
       'Say the name of the invisible one',
       'Clap for whoever just went across the floor',
-      'Take help without apologising',
+      'Take help without apologizing',
       'hold the door',
     ]) {
       expect(html, `an ask has gone missing: ${phrase}`).toContain(phrase);
@@ -114,7 +114,7 @@ test.describe('manifesto: the page keeps the site laws', () => {
     }
   });
 
-  test('prose links are underlined, not colour alone', async ({ page }) => {
+  test('prose links are underlined, not color alone', async ({ page }) => {
     await gotoSettled(page, { path: PATH, waitForReady: false });
     const decoration = await page.locator('.legal-footer .fine a').first()
       .evaluate(el => getComputedStyle(el).textDecorationLine);
